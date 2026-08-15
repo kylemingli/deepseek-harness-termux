@@ -1,5 +1,9 @@
 --- a/packages/attachment/attachment-local/package.json
 +++ b/packages/attachment/attachment-local/package.json
-@@ -1,1 +1,1 @@
+@@ -30,5 +30,5 @@
+   "dependencies": {
+     "@deepseek-ai/schemastery": "workspace:^",
 -    "sharp": "^0.35.3"
 +    "sharp": "0.32.1"
+   },
+   "devDependencies": {
