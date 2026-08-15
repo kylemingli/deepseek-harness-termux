@@ -19,6 +19,7 @@ pkg update && pkg upgrade
 pkg install -y nodejs-lts python clang cmake make binutils git libvips
 
 echo "==> [2/8] 克隆官方 deepseek-harness"
+mkdir -p "$WORK_DIR"
 if [ ! -d "$PROJECT_DIR" ]; then
   git clone https://github.com/deepseek-ai/deepseek-harness "$PROJECT_DIR"
 fi
