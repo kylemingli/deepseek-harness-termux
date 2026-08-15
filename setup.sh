@@ -3,7 +3,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORK_DIR="$HOME/git"
-PROJECT_DIR="$WORK_DIR/deepseek-harness"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")/deepseek-harness"
 MARKER_FILE="$PROJECT_DIR/.termux-setup-done"
 
 # 如果已经安装过，直接启动
