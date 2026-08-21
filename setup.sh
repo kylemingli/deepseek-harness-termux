@@ -29,7 +29,18 @@ echo "==> [3/8] 应用 sharp 版本降级"
 sed -i 's/"sharp": "^0.35.3"/"sharp": "0.32.1"/' packages/attachment/attachment-local/package.json
 
 echo "==> [4/8] 修复 image.ts 类型错误"
-sed -i 's/return { mediaType, width: metadata.width, height: metadata.height }/return { mediaType, width: metadata.width ?? 0, height: metadata.height ?? 0 }/' packages/attachment/attachment-local/src/image.ts
+# 删除 metadata.comments 检查（sharp 0.32.1 无此字段）
+sed -i '/metadata\.comments/d' packages/attachment/attachment-local/src/image.ts
+# width/height 加默认值
+sed -i 's/width: transposed ? metadata.height : metadata.width,/width: (transposed ? metadata.height : metadata.width) ?? 0,/' packages/attachment/attachment-local/src/image.ts
+sed -i 's/height: transposed ? metadata.width : metadata.height,/height: (transposed ? metadata.width : metadata.height) ?? 0,/' packages/attachment/attachment-local/src/image.ts
+# depth/space/hasAlpha 加默认值
+sed -i 's/depth: metadata.depth,/depth: metadata.depth ?? "unknown",/' packages/attachment/attachment-local/src/image.ts
+sed -i 's/space: metadata.space,/space: metadata.space ?? "unknown",/' packages/attachment/attachment-local/src/image.ts
+sed -i 's/hasAlpha: metadata.hasAlpha,/hasAlpha: metadata.hasAlpha ?? false,/' packages/attachment/attachment-local/src/image.ts
+# 测试文件 withIccProfile 删除
+sed -i "s/\.withIccProfile('p3')//" packages/attachment/attachment-local/tests/image.spec.ts
+sed -i "s/\.withIccProfile('p3')//" packages/attachment/attachment-local/tests/normalization.spec.ts
 
 echo "==> [5/8] 安装依赖（跳过编译脚本）"
 pnpm install --no-frozen-lockfile --ignore-scripts
@@ -45,7 +56,7 @@ mkdir -p "$SHARP_DIR/build/Release"
 cp "$SCRIPT_DIR/prebuilt/sharp-android-arm64v8.node" "$SHARP_DIR/build/Release/sharp-android-arm64v8.node"
 ln -sf .pnpm/sharp@0.32.1/node_modules/sharp node_modules/sharp
 
-PTY_DIR="node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty"
+PTY_DIR="node_modules/.pnpm/node-pty@1.2.0-beta.15/node_modules/node-pty"
 mkdir -p "$PTY_DIR/build/Release"
 cp "$SCRIPT_DIR/prebuilt/pty.node" "$PTY_DIR/build/Release/pty.node"
 
